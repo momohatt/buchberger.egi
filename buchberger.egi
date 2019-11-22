@@ -1,6 +1,6 @@
 ; Implementation of Buchberger's algorithm
 
-(load-file "formula.egi")
+(load-file "polynomial.egi")
 
 (define $rewrite
   (lambda [$eqs $poly $ord]
