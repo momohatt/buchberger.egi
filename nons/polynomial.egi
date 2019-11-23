@@ -1,10 +1,11 @@
-loadFile "example.egi"
+-- Specify the full path to run this script from another directory
+loadFile "/Users/momohatt/egison/buchberger.egi/nons/example.egi"
 
 symbol := something
 
 monomial := matcher
   | degree $ as integer with
-    | $tgt -> sum (map snd tgt)
+    | $tgt -> [sum (map snd tgt)]
   | power #$x $ as integer with
     | $tgt -> match tgt as multiset (symbol, integer) with
               | (#x, $n) :: _ -> [n]
@@ -19,12 +20,12 @@ monomial := matcher
 div divisor dividend :=
   match (divisor, dividend) as
     (list (symbol, integer), multiset (symbol, integer)) with
-  | [] -> [dividend]
+  | ([], _) -> [dividend]
   | (($x, $n) :: $r1, (#x, $m & ?(>= n)) :: $r2) ->
       match div r1 r2 as list something with
       | [] -> []
       | $result :: [] -> if n = m then [result]
-                                  else [cons (x, m - n) result]
+                                  else [(x, m - n) :: result]
   | _ -> []
 
 assertEqual "degree"
@@ -45,7 +46,7 @@ assertEqual "power"
    | power #z $n -> n)
   0
 
-assert "mult"
+assertEqual "mult"
   (match [(x, 2), (y, 1)] as monomial with
    | mult #[(x, 1)] $rem -> rem)
   [(x, 1), (y, 1)]
@@ -79,14 +80,14 @@ ordMonoLex l m1 m2 :=
 ordMonoGrlex :=
   \match as (list symbol, monomial, monomial) with
   | (_, degree $n1, degree (!#n1 & $n2)) -> compare n1 n2
-  | ($ord, $m1, $m2) -> ordMonoLex symList m1 m2
+  | ($ord, $m1, $m2) -> ordMonoLex ord m1 m2
 
 assertEqual "ord-mono-lex"
   (ordMonoLex [x, y, z] [(x, 1), (y, 2)] [(y, 3), (z, 2)])
   Greater
 
 assertEqual "ord-mono-lex"
-  (ordMonoLex [x, y, z] [(x, 2), (y, 3), (z, 3)] [( x, 2 ), (y, 1), (z, 5)])
+  (ordMonoLex [x, y, z] [(x, 2), (y, 3), (z, 3)] [(x, 2), (y, 1), (z, 5)])
   Greater
 
 assertEqual "ord-mono-grlex"
@@ -137,7 +138,7 @@ plus :=
   | (($c1, $m1) :: _, (!#(neg c1) & $c2, #m1) :: _) -> (c1 + c2, m1)
   | {(@, ($c2, $m2) :: _), !((_, #m2) :: _)} -> (c2, m2)
 
-assert "plus"
+assertEqual "plus"
   (plus [(2, [x, y]), (-1, [x])] [(1, [x, y]), (-1, [y])])
   [(-1, [x]), (3, [x, y]), (-1, [y])]
 
