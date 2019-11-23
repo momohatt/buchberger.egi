@@ -6,7 +6,7 @@
   (matcher
     {[<degree $> [integer]
       {[$tgt {(sum (map snd tgt))}]}]
-     [<power ,$x $> [symbol integer]
+     [<power ,$x $> [integer]
       {[$tgt (match tgt (multiset [symbol integer])
                {[<cons [,x $n] _> {n}]
                 [_                {0}]})]}]
@@ -43,10 +43,9 @@
 (assert-equal "power"
   (match {[x 2] [y 1]} monomial {[<power ,z $n> n]})
   0)
-(assert "mult"
-  (eq?/m monomial
-         (match {[x 2] [y 1]} monomial {[<mult ,{[x 1]} $rem> rem]})
-         {[y 1] [x 1]}))
+(assert-equal "mult"
+  (match {[x 2] [y 1]} monomial {[<mult ,{[x 1]} $rem> rem]})
+  {[x 1] [y 1]})
 (assert-equal "mult"
   (match-all {[x 2] [y 1]} monomial {[<mult ,{[x 3]} $rem> rem]})
   {})
@@ -79,8 +78,8 @@
   (match-lambda [(list symbol) monomial monomial]
     {[[_ <degree $n1> <degree (& !,n1 $n2)>]
       (compare n1 n2)]
-     [[$sym-list $m1 $m2]
-      (ord-mono-lex sym-list m1 m2)]}))
+     [[$ord $m1 $m2]
+      (ord-mono-lex ord m1 m2)]}))
 
 (assert-equal "ord-mono-lex"
   (ord-mono-lex {x y z} {[x 1] [y 2]} {[y 3] [z 2]})
