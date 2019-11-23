@@ -4,8 +4,6 @@ loadFile "/Users/momohatt/egison/buchberger.egi/src-new/example.egi"
 variable := something
 
 monomial := matcher
-  | degree $ as integer with
-    | $tgt -> [sum (map snd tgt)]
   | power #$x $ as integer with
     | $tgt -> match tgt as multiset (variable, integer) with
               | (#x, $n) :: _ -> [n]
@@ -27,14 +25,6 @@ div divisor dividend :=
       | $result :: [] -> if n = m then [result]
                                   else [(x, m - n) :: result]
   | _ -> []
-
-assertEqual "degree"
-  (match [] as monomial with degree $n -> n)
-  0
-
-assertEqual "degree"
-  (match [(x, 2), (y, 1)] as monomial with degree $n -> n)
-  3
 
 assertEqual "power"
   (matchAll [(x, 2), (y, 1)] as monomial with

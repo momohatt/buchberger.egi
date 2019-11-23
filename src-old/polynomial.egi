@@ -4,9 +4,7 @@
 
 (define $monomial
   (matcher
-    {[<degree $> [integer]
-      {[$tgt {(sum (map snd tgt))}]}]
-     [<power ,$x $> [integer]
+    {[<power ,$x $> [integer]
       {[$tgt (match tgt (multiset [variable integer])
                {[<cons [,x $n] _> {n}]
                 [_                {0}]})]}]
@@ -31,12 +29,6 @@
                       {(cons [x (- m n)] result)})]})]
        [_ {}]})))
 
-(assert-equal "degree"
-  (match {} monomial {[<degree $n> n]})
-  0)
-(assert-equal "degree"
-  (match {[x 2] [y 1]} monomial {[<degree $n> n]})
-  3)
 (assert-equal "power"
   (match-all {[x 2] [y 1]} monomial {[<power $x $n> [x n]]})
   {[x 2] [y 1]})
