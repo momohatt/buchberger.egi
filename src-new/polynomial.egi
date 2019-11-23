@@ -1,5 +1,5 @@
 -- Specify the full path to run this script from another directory
-loadFile "/Users/momohatt/egison/buchberger.egi/nons/example.egi"
+loadFile "/Users/momohatt/egison/buchberger.egi/src-new/example.egi"
 
 variable := something
 

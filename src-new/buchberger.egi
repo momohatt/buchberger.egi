@@ -1,4 +1,4 @@
-loadFile "/Users/momohatt/egison/buchberger.egi/nons/polynomial.egi"
+loadFile "/Users/momohatt/egison/buchberger.egi/src-new/polynomial.egi"
 
 rewrite eqs poly ord :=
   match (eqs, poly) as (multiset polynomial, polynomial) with
