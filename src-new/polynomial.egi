@@ -63,25 +63,28 @@ polynomial := matcher
     | $tgt -> [tgt]
 
 assertEqual "head"
-  (match [(1, [(x, 1)]), (1, [(x, 2)])] as polynomial with
+  -- Head monomial & coefficient of 7 x + 3 x^2
+  (match [(7, [(x, 1)]), (3, [(x, 2)])] as polynomial with
    | head #[x] $n $x -> (n, x))
-  (1, [(x, 2)])
+  (3, [(x, 2)])
 
 -- Lexicographic Ordering
-ordMono l m1 m2 :=
-  match (l, m1, m2) as (list variable, monomial, monomial) with
+ordMono ord m1 m2 :=
+  match (ord, m1, m2) as (list variable, monomial, monomial) with
   | ([], _, _) -> Equal
   | ($x :: $xs, power #x $n1, power #x $n2) ->
     match compare n1 n2 as ordering with
     | equal -> ordMono xs m1 m2
     | $cmp  -> cmp
 
-assertEqual "ord-mono-lex"
-  (ordMono [x, y, z] [(x, 1), (y, 2)] [(y, 3), (z, 2)])
-  Greater
+assertEqual "ord-mono"
+  -- x y^2 < x^2 y
+  (ordMono [x, y, z] [(x, 1), (y, 2)] [(x, 2), (y, 1)])
+  Less
 
-assertEqual "ord-mono-lex"
-  (ordMono [x, y, z] [(x, 2), (y, 3), (z, 3)] [(x, 2), (y, 1), (z, 5)])
+assertEqual "ord-mono"
+  -- x y^2 > y z^3
+  (ordMono [x, y, z] [(x, 1), (y, 2)] [(y, 1), (z, 3)])
   Greater
 
 nonHeads poly ord :=
