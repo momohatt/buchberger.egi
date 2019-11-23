@@ -58,7 +58,7 @@ assertEqual "mult"
 
 polynomial := matcher
   | head #$ord $ $ as (integer, monomial) with
-    | $tgt -> [max/fn (\m1 m2 -> ordMonoLex ord (snd m1) (snd m2)) tgt]
+    | $tgt -> [max/fn (\m1 m2 -> ordMono ord (snd m1) (snd m2)) tgt]
   | $ as multiset (integer, monomial) with
     | $tgt -> [tgt]
 
@@ -68,34 +68,20 @@ assertEqual "head"
   (1, [(x, 2)])
 
 -- Lexicographic Ordering
-ordMonoLex l m1 m2 :=
+ordMono l m1 m2 :=
   match (l, m1, m2) as (list variable, monomial, monomial) with
   | ([], _, _) -> Equal
   | ($x :: $xs, power #x $n1, power #x $n2) ->
     match compare n1 n2 as ordering with
-    | equal -> ordMonoLex xs m1 m2
+    | equal -> ordMono xs m1 m2
     | $cmp  -> cmp
 
--- Graded Lexicographic Ordering
-ordMonoGrlex :=
-  \match as (list variable, monomial, monomial) with
-  | (_, degree $n1, degree (!#n1 & $n2)) -> compare n1 n2
-  | ($ord, $m1, $m2) -> ordMonoLex ord m1 m2
-
 assertEqual "ord-mono-lex"
-  (ordMonoLex [x, y, z] [(x, 1), (y, 2)] [(y, 3), (z, 2)])
+  (ordMono [x, y, z] [(x, 1), (y, 2)] [(y, 3), (z, 2)])
   Greater
 
 assertEqual "ord-mono-lex"
-  (ordMonoLex [x, y, z] [(x, 2), (y, 3), (z, 3)] [(x, 2), (y, 1), (z, 5)])
-  Greater
-
-assertEqual "ord-mono-grlex"
-  (ordMonoGrlex [x, y, z] [(x, 1), (y, 3), (z, 2)] [(x, 4), (y, 1)])
-  Greater
-
-assertEqual "ord-mono-grlex"
-  (ordMonoGrlex [x, y, z] [(x, 1), (y, 3), (z, 2)] [(x, 1), (y, 1), (z, 4)])
+  (ordMono [x, y, z] [(x, 2), (y, 3), (z, 3)] [(x, 2), (y, 1), (z, 5)])
   Greater
 
 nonHeads poly ord :=

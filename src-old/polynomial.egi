@@ -53,7 +53,7 @@
 (define $polynomial
   (matcher
     {[<head ,$ord $ $> [integer monomial]
-      {[$tgt {(max/fn (lambda [$m1 $m2] (ord-mono-lex ord (snd m1) (snd m2)))
+      {[$tgt {(max/fn (lambda [$m1 $m2] (ord-mono ord (snd m1) (snd m2)))
                       tgt)}]}]
      [$ (multiset [integer monomial])
       {[$tgt {tgt}]}]
@@ -64,34 +64,20 @@
   [1 {[x 2]}])
 
 ; Lexicographic Ordering
-(define $ord-mono-lex
+(define $ord-mono
   (lambda [$l $m1 $m2]
     (match [l m1 m2] [(list variable) monomial monomial]
       {[[<nil> _ _] <Equal>]
        [[<cons $x $xs> <power ,x $n1> <power ,x $n2>]
         (match (compare n1 n2) ordering
-          {[<equal> (ord-mono-lex xs m1 m2)]
+          {[<equal> (ord-mono xs m1 m2)]
            [$cmp    cmp]})]})))
 
-; Graded Lexicographic Ordering
-(define $ord-mono-grlex
-  (match-lambda [(list variable) monomial monomial]
-    {[[_ <degree $n1> <degree (& !,n1 $n2)>]
-      (compare n1 n2)]
-     [[$ord $m1 $m2]
-      (ord-mono-lex ord m1 m2)]}))
-
-(assert-equal "ord-mono-lex"
-  (ord-mono-lex {x y z} {[x 1] [y 2]} {[y 3] [z 2]})
+(assert-equal "ord-mono"
+  (ord-mono {x y z} {[x 1] [y 2]} {[y 3] [z 2]})
   <Greater>)
-(assert-equal "ord-mono-lex"
-  (ord-mono-lex {x y z} {[x 2] [y 3] [z 3]} {[x 2] [y 1] [z 5]})
-  <Greater>)
-(assert-equal "ord-mono-grlex"
-  (ord-mono-grlex {x y z} {[x 1] [y 3] [z 2]} {[x 4] [y 1]})
-  <Greater>)
-(assert-equal "ord-mono-grlex"
-  (ord-mono-grlex {x y z} {[x 1] [y 3] [z 2]} {[x 1] [y 1] [z 4]})
+(assert-equal "ord-mono"
+  (ord-mono {x y z} {[x 2] [y 3] [z 3]} {[x 2] [y 1] [z 5]})
   <Greater>)
 
 (define $non-heads
