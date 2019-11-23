@@ -171,9 +171,9 @@ showCoeffMonoHead c x := match (c, x) as (integer, monomial) with
 showPoly :=
   \match as list (integer, monomial) with
     | [] -> "0"
-    | $x :: $x ->
+    | $x :: $xs ->
       let first := showCoeffMonoHead x
-       in S.intercalate " " (first :: (map showCoeffMono xs))
+       in S.intercalate " " (first :: map showCoeffMono xs)
 
 colShow/fn show set :=
   S.concat ["{", S.intercalate ",  " (map show set), "}"]

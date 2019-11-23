@@ -21,10 +21,9 @@
 (assert-equal "normalize"
   (normalize {f1 f2} {[-1 {[x 2] [y 1]}] [1 {[x 1] [y 2]}]} {x y})
   {[-1 {[x 2]}] [1 {[y 2]}]})
-(assert "rewrite"
-  (eq?/m (multiset [integer monomial])
-         (rewrite {f1 f2} {[1 {[x 2] [y 2]}]} {x y})
-         {[1 {[y 1] [x 2]}]}))
+(assert-equal "rewrite"
+  (rewrite {f1 f2} {[1 {[x 2] [y 2]}]} {x y})
+  {[1 {[y 1] [x 2]}]})
 
 (define $lcm
   (lambda [$m1 $m2]
@@ -76,7 +75,7 @@
                    [<head ,ord $c _>
                     (let* {[$h' (mult [(/ 1 c) {}] h)]
                            [$new-pairs (map (lambda $x [x h']) fs)]}
-                      (buchberger-loop {@pairs' @new-pairs}
+                      (buchberger-loop (append pairs' new-pairs)
                                        (cons (debug/fn show-poly h') fs)
                                        ord))]
                    }))]
