@@ -1,25 +1,25 @@
 -- Specify the full path to run this script from another directory
 loadFile "/Users/momohatt/egison/buchberger.egi/nons/example.egi"
 
-symbol := something
+variable := something
 
 monomial := matcher
   | degree $ as integer with
     | $tgt -> [sum (map snd tgt)]
   | power #$x $ as integer with
-    | $tgt -> match tgt as multiset (symbol, integer) with
+    | $tgt -> match tgt as multiset (variable, integer) with
               | (#x, $n) :: _ -> [n]
               | _             -> [0]
-  | power $ $ as (symbol, integer) with
+  | power $ $ as (variable, integer) with
     | $tgt -> tgt
   | mult #$val $ as monomial with
     | $tgt -> div val tgt
-  | $ as multiset (symbol, integer) with
+  | $ as multiset (variable, integer) with
     | $tgt -> [tgt]
 
 div divisor dividend :=
   match (divisor, dividend) as
-    (list (symbol, integer), multiset (symbol, integer)) with
+    (list (variable, integer), multiset (variable, integer)) with
   | ([], _) -> [dividend]
   | (($x, $n) :: $r1, (#x, $m & ?(>= n)) :: $r2) ->
       match div r1 r2 as list something with
@@ -69,7 +69,7 @@ assertEqual "head"
 
 -- Lexicographic Ordering
 ordMonoLex l m1 m2 :=
-  match (l, m1, m2) as (list symbol, monomial, monomial) with
+  match (l, m1, m2) as (list variable, monomial, monomial) with
   | ([], _, _) -> Equal
   | ($x :: $xs, power #x $n1, power #x $n2) ->
     match compare n1 n2 as ordering with
@@ -78,7 +78,7 @@ ordMonoLex l m1 m2 :=
 
 -- Graded Lexicographic Ordering
 ordMonoGrlex :=
-  \match as (list symbol, monomial, monomial) with
+  \match as (list variable, monomial, monomial) with
   | (_, degree $n1, degree (!#n1 & $n2)) -> compare n1 n2
   | ($ord, $m1, $m2) -> ordMonoLex ord m1 m2
 

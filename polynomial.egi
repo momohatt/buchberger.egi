@@ -1,26 +1,26 @@
 (load-file "example.egi")
 
-(define $symbol something)
+(define $variable something)
 
 (define $monomial
   (matcher
     {[<degree $> [integer]
       {[$tgt {(sum (map snd tgt))}]}]
      [<power ,$x $> [integer]
-      {[$tgt (match tgt (multiset [symbol integer])
+      {[$tgt (match tgt (multiset [variable integer])
                {[<cons [,x $n] _> {n}]
                 [_                {0}]})]}]
-     [<power $ $> [symbol integer]
+     [<power $ $> [variable integer]
       {[$tgt tgt]}]
      [<mult ,$val $> [monomial]
       {[$tgt (div val tgt)]}]
-     [$ (multiset [symbol integer])
+     [$ (multiset [variable integer])
       {[$tgt {tgt}]}]
      }))
 
 (define $div
   (lambda [$divisor $dividend] ; dividend / divisor
-    (match [divisor dividend] [(list [symbol integer]) (multiset [symbol integer])]
+    (match [divisor dividend] [(list [variable integer]) (multiset [variable integer])]
       {[[<nil> _] {dividend}]
        [[<cons [$x $n] $r1> <cons [,x (& ?(lte? n $) $m)] $r2>]
         (match (div r1 r2) (list something)
@@ -66,7 +66,7 @@
 ; Lexicographic Ordering
 (define $ord-mono-lex
   (lambda [$l $m1 $m2]
-    (match [l m1 m2] [(list symbol) monomial monomial]
+    (match [l m1 m2] [(list variable) monomial monomial]
       {[[<nil> _ _] <Equal>]
        [[<cons $x $xs> <power ,x $n1> <power ,x $n2>]
         (match (compare n1 n2) ordering
@@ -75,7 +75,7 @@
 
 ; Graded Lexicographic Ordering
 (define $ord-mono-grlex
-  (match-lambda [(list symbol) monomial monomial]
+  (match-lambda [(list variable) monomial monomial]
     {[[_ <degree $n1> <degree (& !,n1 $n2)>]
       (compare n1 n2)]
      [[$ord $m1 $m2]
