@@ -114,14 +114,12 @@
      [{[# <cons [$x $n] _>] !<cons [,x _] _>} [x n]]
      }))
 
-(assert "mult-mono"
-  (eq?/m (multiset something)
-         (mult-mono {[x 1] [y 2]} {[y 1] [z 2]})
-         {[x 1] [y 3] [z 2]}))
-(assert "mult-mono"
-  (eq?/m (multiset something)
-         (mult-mono {} {[y 1] [z 2]})
-         {[y 1] [z 2]}))
+(assert-equal "mult-mono"
+  (mult-mono {[x 1] [y 2]} {[y 1] [z 2]})
+  {[y 3] [x 1] [z 2]})
+(assert-equal "mult-mono"
+  (mult-mono {} {[y 1] [z 2]})
+  {[y 1] [z 2]})
 
 (define $mult
   (match-all-lambda [[integer monomial] polynomial]
@@ -140,10 +138,9 @@
      [{[# <cons [$c2 $m2] _>] !<cons [_ ,m2] _>} [c2 m2]]
      }))
 
-(assert "plus"
-  (eq?/m (multiset something)
-         (plus {[2 {x y}] [-1 {x}]} {[1 {x y}] [-1 {y}]})
-         {[3 {x y}] [-1 {x}] [-1 {y}]}))
+(assert-equal "plus"
+  (plus {[2 {x y}] [-1 {x}]} {[1 {x y}] [-1 {y}]})
+  {[-1 {x}] [3 {x y}] [-1 {y}]})
 
 ; ==============================================================================
 
