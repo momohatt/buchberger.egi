@@ -1,4 +1,4 @@
--- Specify the full path to run this script from another directory
+-- I'm specifying the full path to run this script from another directory
 loadFile "/Users/momohatt/egison/buchberger.egi/src-new/example.egi"
 
 variable := something
@@ -53,12 +53,12 @@ polynomial := matcher
     | $tgt -> [tgt]
 
 assertEqual "head"
-  -- Head monomial & coefficient of 7 x + 3 x^2
+  -- Head coefficient & monomial of 7 x + 3 x^2 is (3, x^2)
   (match [(7, [(x, 1)]), (3, [(x, 2)])] as polynomial with
    | head #[x] $n $x -> (n, x))
   (3, [(x, 2)])
 
--- Lexicographic Ordering
+-- Lexicographic ordering
 ordMono ord m1 m2 :=
   match (ord, m1, m2) as (list variable, monomial, monomial) with
   | ([], _, _) -> Equal
@@ -85,6 +85,10 @@ assertEqual "non-heads"
   (nonHeads [(1, [(x, 2)]), (1, [(y, 1)]), (1, [])] [x, y])
   [(1, [(y, 1)]), (1, [])]
 
+--
+-- Arithmetic operation on polynomials
+--
+
 negate :=
   \matchAll as polynomial with
   | ($c, $mono) :: _ -> (neg c, mono)
@@ -93,13 +97,16 @@ multMono :=
   \matchAll as (monomial, monomial) with
   | (($x, $n) :: _, (#x, $m) :: _) -> (x, n + m)
   | (($x, $n) :: _, !((#x, _) :: _)) -> (x, n)
-  | {(@, ($x, $n) :: _), !((#x, _) :: _)} -> (x, n)
+  | {(       @       , ($x, $n) :: _),
+      !((#x, _) :: _)} -> (x, n)
 
 assertEqual "mult-mono"
+  -- x y^2 = y z^2 = x y^3 z^2
   (multMono [(x, 1), (y, 2)] [(y, 1), (z, 2)])
   [(y, 3), (x, 1), (z, 2)]
 
 assertEqual "mult-mono"
+  -- 1 * (y z^2) = y z^2
   (multMono [] [(y, 1), (z, 2)])
   [(y, 1), (z, 2)]
 
@@ -108,6 +115,7 @@ mult :=
   | (($c1, $m1), ($c2, $m2) :: _) -> (c1 * c2, multMono m1 m2)
 
 assertEqual "mult"
+  -- 2x * (2xy - x) = 4 x^2 y - 2 x^2
   (mult (2, [(x, 1)]) [(2, [(x, 1), (y, 1)]), (-1, [(x, 1)])])
   [(4, [(x, 2), (y, 1)]), (-2, [(x, 2)])]
 
@@ -115,11 +123,16 @@ plus :=
   \matchAll as (polynomial, polynomial) with
   | (($c1, $m1) :: _, !((_, #m1) :: _)) -> (c1, m1)
   | (($c1, $m1) :: _, (!#(neg c1) & $c2, #m1) :: _) -> (c1 + c2, m1)
-  | {(@, ($c2, $m2) :: _), !((_, #m2) :: _)} -> (c2, m2)
+  | {(        @       , ($c2, $m2) :: _),
+      !((_, #m2) :: _)} -> (c2, m2)
 
 assertEqual "plus"
   (plus [(2, [x, y]), (-1, [x])] [(1, [x, y]), (-1, [y])])
   [(-1, [x]), (3, [x, y]), (-1, [y])]
+
+--
+-- Pretty printers
+--
 
 showMono mono :=
   S.intercalate " "

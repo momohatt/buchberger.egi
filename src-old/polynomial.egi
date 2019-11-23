@@ -55,7 +55,7 @@
   (match {[7 {[x 1]}] [3 {[x 2]}]} polynomial {[<head ,{x} $n $x> [n x]]})
   [3 {[x 2]}])
 
-; Lexicographic Ordering
+; Lexicographic ordering
 (define $ord-mono
   (lambda [$l $m1 $m2]
     (match [l m1 m2] [(list variable) monomial monomial]
