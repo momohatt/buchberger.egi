@@ -72,15 +72,6 @@
   (ord-mono {x y z} {[x 1] [y 2]} {[y 1] [z 3]})
   <Greater>)
 
-(define $non-heads
-  (lambda [$poly $ord]
-    (match poly polynomial
-      {[<head ,ord $c $mono> (delete-first [c mono] poly)]})))
-
-(assert-equal "non-heads"
-  (non-heads {[1 {[x 2]}] [1 {[y 1]}] [1 {}]} {x y})
-  {[1 {[y 1]}] [1 {}]})
-
 (define $negate
   (match-all-lambda polynomial
     {[<cons [$c $mono] _> [(neg c) mono]]}))

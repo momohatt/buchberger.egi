@@ -4,7 +4,8 @@ loadFile "/Users/momohatt/egison/buchberger.egi/src-new/polynomial.egi"
 reduce eqs poly ord :=
   match (eqs, poly) as (multiset polynomial, polynomial) with
   | (($rule & head #ord #1 $hf) :: _, ($c, mult #hf $m') :: $rs) ->
-    plus rs (mult (c, m') (negate (nonHeads rule ord)))
+    let nonHead := deleteFirst (1, hf) rule
+     in plus rs (mult (c, m') (negate nonHead))
   | _ -> poly
 
 normalize eqs poly ord :=

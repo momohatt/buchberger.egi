@@ -6,7 +6,8 @@
   (lambda [$eqs $poly $ord]
     (match [eqs poly] [(multiset polynomial) polynomial]
       {[[<cons (& $rule <head ,ord ,1 $hf>) _> <cons [$c <mult ,hf $m'>] $rs>]
-        (plus rs (mult [c m'] (negate (non-heads rule ord))))]
+        (let {[$non-head (delete-first [1 hf] rule)]}
+          (plus rs (mult [c m'] (negate non-head))))]
        [_ poly]})))
 
 (define $normalize

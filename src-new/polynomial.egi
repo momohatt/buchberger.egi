@@ -77,14 +77,6 @@ assertEqual "ord-mono"
   (ordMono [x, y, z] [(x, 1), (y, 2)] [(y, 1), (z, 3)])
   Greater
 
-nonHeads poly ord :=
-  match poly as polynomial with
-  | head #ord $c $mono -> deleteFirst (c, mono) poly
-
-assertEqual "non-heads"
-  (nonHeads [(1, [(x, 2)]), (1, [(y, 1)]), (1, [])] [x, y])
-  [(1, [(y, 1)]), (1, [])]
-
 --
 -- Arithmetic operation on polynomials
 --
