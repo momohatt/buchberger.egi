@@ -2,16 +2,16 @@
 
 (load-file "polynomial.egi")
 
-(define $rewrite
+(define $reduce
   (lambda [$eqs $poly $ord]
     (match [eqs poly] [(multiset polynomial) polynomial]
-      {[[<cons (& $rule <head ,ord ,1 $hf>) _> <cons [$a <mult ,hf $m'>] $rs>]
-        (plus rs (mult [a m'] (negate (non-heads rule ord))))]
+      {[[<cons (& $rule <head ,ord ,1 $hf>) _> <cons [$c <mult ,hf $m'>] $rs>]
+        (plus rs (mult [c m'] (negate (non-heads rule ord))))]
        [_ poly]})))
 
 (define $normalize
   (lambda [$eqs $poly $ord]
-    (let {[$poly' (rewrite eqs poly ord)]}
+    (let {[$poly' (reduce eqs poly ord)]}
       (if (eq?/m polynomial poly poly') poly (normalize eqs poly' ord)))))
 
 (define $joinable?
@@ -21,8 +21,8 @@
 (assert-equal "normalize"
   (normalize {f1 f2} {[-1 {[x 2] [y 1]}] [1 {[x 1] [y 2]}]} {x y})
   {[-1 {[x 2]}] [1 {[y 2]}]})
-(assert-equal "rewrite"
-  (rewrite {f1 f2} {[1 {[x 2] [y 2]}]} {x y})
+(assert-equal "reduce"
+  (reduce {f1 f2} {[1 {[x 2] [y 2]}]} {x y})
   {[1 {[y 1] [x 2]}]})
 
 (define $lcm
