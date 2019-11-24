@@ -3,10 +3,8 @@ loadFile "/Users/momohatt/egison/buchberger.egi/src-new/polynomial.egi"
 
 reduce eqs poly ord :=
   match (eqs, poly) as (multiset polynomial, polynomial) with
-  | (($rule & head #ord #1 $hf) :: _, ($c, mult #hf $m') :: $rs) ->
-    let nonHead := deleteFirst (1, hf) rule
-     in plus rs (mult (c, m') (negate nonHead))
-    -- plus poly (mult (c, m') (negate rule))
+  | (($rule & head #ord #1 $hf) :: _, ($c, mult #hf $m') :: _) ->
+    plus poly (mult (c, m') (negate rule))
   | _ -> poly
 
 normalize eqs poly ord :=
@@ -75,30 +73,27 @@ allPairs fs :=
     | _ ++ $fi :: _ ++ $fj :: _ -> (fi, fj)
 
 -- Make head constant 1
-lint ord fs :=
+preprocess ord fs :=
   matchAll fs as multiset polynomial with
     | ($f & head #ord $c _) :: _ -> mult (1 / c, []) f
 
 buchberger fs ord :=
-  let fs' := lint ord fs
+  let fs' := preprocess ord fs
    in buchbergerLoop (allPairs fs') fs' ord
 
-assertEqual "lint"
-  (lint [x, y, z] [[(1, [(z, 1)]), (-1, [(x, 1)]), (-1, [(y, 1)])]])
+assertEqual "preprocess"
+  (preprocess [x, y, z] [[(1, [(z, 1)]), (-1, [(x, 1)]), (-1, [(y, 1)])]])
   [[(-1, [(z, 1)]), (1, [(x, 1)]), (1, [(y, 1)])]]
 
 assertEqual "buchberger"
   (map showPoly (buchberger [f1, f2] [x, y]))
-  ["y^3 - y^2", "x^2 - y^2", "x y^2 - y^2"]
+  ["y^3 - y^2", "x^2 - y^2", "x^2 y - x^2", "x y^2 - y^2"]
 
 assertEqual "buchberger"
   (map showPoly (buchberger fs1 [x, y, z]))
-  ["z - 3", "x - 1", "y - 2"]
+  ["z - 3", "x - 1", "y - 2", "- z + x + y"]
 
 assertEqual "buchberger"
   (map showPoly (buchberger fs2 [x, y, z]))
-  ["1 - 10z^2 + z^4", "y + 1 / 2z^3 - 11 / 2z", "x - z + y"]
-
-assertEqual "buchberger"
-  (map showPoly (buchberger fs3 [x, y]))
-  ["y^2 - 4y + 3", "x^2 - 2x + 3y^2 - 12y + 9"]
+  ["z^4 - 10z^2 + 1", "1 / 2z^3 - 11 / 2z + y", "- 1 / 2z^2 + z y - 1 / 2",
+   "x^2 - 2", "y^2 - 3", "- z + x + y"]
