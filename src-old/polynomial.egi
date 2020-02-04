@@ -30,8 +30,7 @@
        [_ {}]})))
 
 (assert-equal "power"
-  (match-all {[x 2] [y 1]} monomial {[<power $x $n> [x n]]})
-  {[x 2] [y 1]})
+  (match-all {[x 2] [y 1]} monomial {[<power $x $n> [x n]]}) {[x 2] [y 1]})
 (assert-equal "power"
   (match {[x 2] [y 1]} monomial {[<power ,z $n> n]})
   0)
@@ -164,6 +163,6 @@
   (col-show/fn show-poly $1))
 
 (define $debug/fn
-  (macro [$show $x]
+  (lambda [$show $x]
     (io (do {[(print (show x))]}
           (return x)))))
