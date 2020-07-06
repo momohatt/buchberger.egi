@@ -1,11 +1,7 @@
 # Buchberger's algorithm in Egison
 
-## About directories
-* `src-old` : Egison program in old syntax (S-expression)
-* `src-new` : Egison program in new syntax
-
 ## Requirement
-Egison >= 3.9.1 for `src-old`, Egison >= 3.10.1 for `src-new`
+Egison >= 4.0.0
 
 ## Reference
 * Franz Baader and Tobias Nipkow. "Term Rewriting and All That". Cambridge university press, 1999.
