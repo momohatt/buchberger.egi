@@ -1,5 +1,4 @@
--- I'm specifying the full path to run this script from another directory
-loadFile "/Users/momohatt/egison/buchberger.egi/src-new/example.egi"
+loadFile "example.egi"
 
 variable := something
 
@@ -165,7 +164,6 @@ colShow/fn show set :=
 showPolys x :=
   colShow/fn show-poly x
 
-debug/fn :=
-  macro show x ->
-    io do print (show x)
-          return x
+debug/fn show x :=
+  io do print (show x)
+        return x

@@ -1,5 +1,4 @@
--- I'm specifying the full path to run this script from another directory
-loadFile "/Users/momohatt/egison/buchberger.egi/src-new/polynomial.egi"
+loadFile "polynomial.egi"
 
 reduce eqs poly ord :=
   match (eqs, poly) as (multiset polynomial, polynomial) with
@@ -9,7 +8,7 @@ reduce eqs poly ord :=
 
 normalize eqs poly ord :=
   let poly' := reduce eqs poly ord
-   in if eq?/m polynomial poly poly'
+   in if eqAs polynomial poly poly'
         then poly
         else normalize eqs poly' ord
 
@@ -24,7 +23,7 @@ assertEqual "reduce"
 -- Least Common Multiple
 lcm m1 m2 :=
   matchAll (m1, m2) as (monomial, monomial) with
-    | (power $x $n1, power #x $n2) -> (x, max [n1, n2])
+    | (power $x $n1, power #x $n2) -> (x, max n1 n2)
     | {(     @     , power $x $n),
         power #x #0} -> (x, n)
 
